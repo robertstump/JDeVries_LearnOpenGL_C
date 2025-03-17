@@ -105,40 +105,73 @@ int main() {
     glfwSwapInterval(1);
 
     float vertices[] = {
-        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left     
-    };
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+       -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+       -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+       -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+       -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+       -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+       -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+       -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+       -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    }; 
 
-    unsigned int indices[] = {
-        0, 1, 3,
-        1, 2, 3 
+    vec3 cubePositions[] = {
+         { 0.f, 0.f, 0.f },
+         { 2.f, 5.f, -15.f },
+         { -1.5f, -2.2f, -2.5f },
+         { -3.8f, -2.f, -12.3f },
+         { 2.4f, -0.4f, -3.5f },
+         { -1.7f, 3.f, -7.5f },
+         { 1.3f, 2.0f, -2.5f },
+         { 1.5f, 2.f, -2.5f },
+         { 1.5f, 0.2f, -1.5f },
+         { -1.3f, 1.f, -1.5f }
     };
-
+    
     Shader shader = loadGlShaders(&arena, "shaders/coordVertex.vs", "shaders/textureFragment.fs");
 
-    GLuint VAO, VBO, EBO;
+    GLuint VAO, VBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-    
     //load sets repeat in s & t, min and mag filter linear, pass filename and texture location enum
     GLuint texture1, texture2;
     glGenTextures(1, &texture1);
@@ -151,19 +184,22 @@ int main() {
     glBindTexture(GL_TEXTURE_2D, texture2);
     loadTextureRGBA("resources/textures/awesomeface.png");
 
+    glEnable(GL_DEPTH_TEST);
     glUseProgram(shader.ID);
     glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0);
     glUniform1i(glGetUniformLocation(shader.ID, "texture2"), 1);
 
     mat4x4 projection;
+    mat4x4_identity(projection);
     float fovRad = 45.f * M_PI / 180;
-    mat4x4_perspective(projection, fovRad, 1280 / 960, 0.1f, 100.f);
 
     mat4x4 model;
     mat4x4_identity(model);
-    float modelRad = -55.f * M_PI / 180;
-    mat4x4_rotate(model, model, 1.f, 0.f, 0.f, modelRad);
 
+    mat4x4 view;
+    mat4x4_identity(view);
+
+    float zRot; 
     GLuint modelLoc = glGetUniformLocation(shader.ID, "model");
     GLuint projLoc = glGetUniformLocation(shader.ID, "projection");
     GLuint viewLoc = glGetUniformLocation(shader.ID, "view");
@@ -171,13 +207,19 @@ int main() {
     while(!glfwWindowShouldClose(window)) {
             glfwGetFramebufferSize(window, &width, &height);
 
-            mat4x4 view;
-            mat4x4_identity(view);
+            //zRot = sinf((float)glfwGetTime());
+            zRot = (float)glfwGetTime();
+           
+            //mat4x4_perspective(projection, fovRad, width / height, 0.1f, 100.f);
+            mat4x4_perspective(projection, 45.f, width / height, 0.1f, 100.f);
+
             mat4x4_translate(view, 0.f, 0.f, camZ);
+            mat4x4_rotate(model, model, 1.f, 1.f, 0.f, zRot);
+            //mat4x4_rotate(model, model, 0.f, 0.f, 1.f, xRot);
 
             //render loop:
             glClearColor(0.2f, 0.3f, 0.6f, 1.f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture1);
@@ -187,12 +229,24 @@ int main() {
             glUseProgram(shader.ID);
             glUniform1f(glGetUniformLocation(shader.ID, "mixOffset"), mixOffset);
 
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (void*)model);
             glUniformMatrix4fv(projLoc, 1, GL_FALSE, (void*)projection);
             glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (void*)view);
 
             glBindVertexArray(VAO);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            for( int i = 0; i < 10; i++) {
+                if(i % 3 == 1) ) {
+                    mat4x4_identity(model);
+                    mat4x4_translate(model, cubePositions[i][0], cubePositions[i][1], cubePositions[i][2]);
+                    mat4x4_rotate(model, model, 1.f, 0.0f, 0.f, zRot);
+                } else { 
+                    mat4x4_identity(model);
+                    mat4x4_translate(model, cubePositions[i][0], cubePositions[i][1], cubePositions[i][2]);
+                    mat4x4_rotate(model, model, .4f, .6f, 1.f, 40);
+                }
+
+                glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (void*)model);
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+            }
 
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -200,7 +254,6 @@ int main() {
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
 
     destroyArena(&arena);
     glfwDestroyWindow(window);
