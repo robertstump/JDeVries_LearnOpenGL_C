@@ -1,3 +1,5 @@
+#Consider flag for turning off testing, or turning off fresh compile to just launch etc.
+#
 echo "##########################################################"
 echo "#             Compiling OPENGL Testing....               #"
 echo "##########################################################"
@@ -36,6 +38,11 @@ if [ "$TEST_ONLY" = true ]; then
     echo "#                   Running Unit Tests....               #"
     echo "##########################################################"
 
+    if ! ./test.sh; then
+        echo "[ ] Test compilation failed."
+        exit 1
+    fi
+
     if ! ./runtests.sh; then
         echo "[ ] Unit tests failed."
         exit 1
@@ -66,6 +73,11 @@ echo
 echo "##########################################################"
 echo "#                   Running Unit Tests....               #"
 echo "##########################################################"
+
+if ! ./test.sh; then
+    echo "[ ] Test compilation failed."
+    exit 1
+fi
 
 if ! ./runtests.sh; then
     echo "[ ] Unit tests failed."
