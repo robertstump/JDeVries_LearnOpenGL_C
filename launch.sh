@@ -56,9 +56,9 @@ fi
 SRC_DIR="src"
 INCLUDE_DIR="include"
 BIN_DIR="bin"
-TARGET="$BIN_DIR/lighting2Ex"
+TARGET="$BIN_DIR/lighting4Ex_rotate"
 
-SRC_MAIN="$SRC_DIR/lighting2.c"
+SRC_MAIN="$SRC_DIR/lighting4_rotateLight.c"
 #SRC_SECONDARY="SRC_DIR/..."
 
 clang -std=c99 $LIGHT_DBG_FLAGS -o $TARGET $SRC_MAIN -I/opt/homebrew/include -L/opt/homebrew/lib -Iinclude -lglfw -framework Cocoa -framework OpenGL -framework IOKit -DGL_SILENCE_DEPRECATION

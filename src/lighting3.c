@@ -29,7 +29,7 @@ void scroll_callback(GLFWwindow *window, double xOffset, double yOffset) {
     ProcessMouseScroll(cam, yOffset);
 }
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode) {
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
@@ -50,7 +50,7 @@ void processInput(GLFWwindow *window) {
     }
 }
 
-void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     if(mouseFirst) {
         cam->lastX = xpos;
         cam->lastY = ypos;
@@ -68,7 +68,7 @@ void error_callback(int error, const char *description) {
     fprintf(stderr, "ERROR: %s\n", description);
 }
 
-void framebuffer_size_callback(GLFWwindow * window, int width, int height) {
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
@@ -76,12 +76,12 @@ int main() {
     int width = SCREEN_WIDTH;
     int height = SCREEN_HEIGHT;
     mouseFirst = TRUE;
-    vec3 lightPos = {1.2f, 1.f, 2.f};
+    vec3 lightPos = {1.2f, 2.f, 2.f};
 
     ScratchArena arena = createArena(ARENA_SIZE);
     arenaPush(&arena);
-    cam = arenaAlloc(&arena, sizeof(Camera), sizeof(float));
-    
+    cam = arenaAlloc(&arena, sizeof(Camera), ALIGN_4);
+
     CameraInit(cam, (vec3){0.f, 0.f, 3.f}, (vec3){0.f, 1.f, 0.f}, YAW, PITCH);
 
     if(!cam) {
@@ -91,7 +91,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    if(!glfwInit()) { 
+    if(!glfwInit()) {
         fprintf(stderr, "ERROR: Failed to initialize GLFW. \n");
         glfwTerminate();
         destroyArena(&arena);
@@ -104,13 +104,13 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-    GLFWwindow *window = glfwCreateWindow(width, height, "OpenGL Lighting 1", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(width, height, "OpenGL Lighting 3", NULL, NULL);
     if(!window) {
         fprintf(stderr, "ERROR: Failed to initialize window.\n");
         glfwTerminate();
         destroyArena(&arena);
         exit(EXIT_FAILURE);
-}
+    }
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwMakeContextCurrent(window);
@@ -122,7 +122,7 @@ int main() {
     glfwSwapInterval(1);
 
     glEnable(GL_DEPTH_TEST);
-    
+
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -166,8 +166,8 @@ int main() {
         -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
     };
-    
-    Shader shader = loadGlShaders(&arena, "shaders/lighting2Vertex.vs", "shaders/lighting2Fragment.fs");
+
+    Shader shader = loadGlShaders(&arena, "shaders/lighting3Vertex.vs", "shaders/lighting3Fragment.fs");
     Shader lightCubeShader = loadGlShaders(&arena, "shaders/lightCubeVertex.vs", "shaders/lightCubeFragment.fs");
 
     GLuint cubeVAO, VBO;
@@ -183,11 +183,11 @@ int main() {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    
+
     GLuint lightCubeVAO;
     glGenVertexArrays(1, &lightCubeVAO);
     glBindVertexArray(lightCubeVAO);
-    
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -226,7 +226,7 @@ int main() {
         glUniform3f(glGetUniformLocation(shader.ID, "objectColor"), 1.f, 0.5f, 0.31f);
         glUniform3f(glGetUniformLocation(shader.ID, "lightColor"), 1.f, 1.f, 1.f);
         glUniform3f(glGetUniformLocation(shader.ID, "lightPos"), lightPos[0], lightPos[1], lightPos[2]);
-
+        
         mat4x4_perspective(projection, fovRad, (float)width / height, 0.1f, 100.f);
 
         vec3 tmp;
@@ -247,9 +247,9 @@ int main() {
         glUniformMatrix4fv(lightViewLoc, 1, GL_FALSE, (const float*)view);
         mat4x4_identity(model);
         mat4x4_translate(model, lightPos[0], lightPos[1], lightPos[2]);
-        mat4x4_scale_aniso(model, model, 0.1f, 0.1f, 0.1f);
+        mat4x4_scale_aniso(model, model, 0.2f, 0.2f, 0.2f);
         glUniformMatrix4fv(lightModelLoc, 1, GL_FALSE, (const float*)model);
-       
+
         glBindVertexArray(lightCubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
